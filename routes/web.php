@@ -1,13 +1,14 @@
 <?php
-use App\Http\Controllers\UserController;
+
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\ConfirmPasswordController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 
-// Route for the homepage (visible to everyone)
+// Public Routes
 Route::get('/', function () {
     return view('home');
 })->name('home');
@@ -19,28 +20,15 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [RegisterController::class, 'register']);
 
-// Role-based Routes
+// Authenticated User Routes
 Route::middleware(['auth'])->group(function () {
-    // User Dashboard Route (accessible only by logged-in users)
     Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
-
-    // Admin Dashboard Route (accessible only by admins)
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     
-    // Profile Routes
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
-    Route::put('/profile', [UserController::class, 'update'])->name('profile.update');
-    
-    // Password Confirmation Routes
-    Route::get('password/confirm', [ConfirmPasswordController::class, 'showConfirmForm'])->name('password.confirm');
-    Route::post('password/confirm', [ConfirmPasswordController::class, 'confirm']);
-
-
-    Route::middleware(['auth'])->get('/user/dashboard', function () {
-        return view('user.dashboard');
-    })->name('user.dashboard');
-    
-
-
+    Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
 });
 
+// Admin Routes
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+});

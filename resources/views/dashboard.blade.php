@@ -1,29 +1,17 @@
-{{-- resources/views/user/dashboard.blade.php --}}
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Dashboard') }}
+        </h2>
+    </x-slot>
 
-
-@extends('layouts.app')
-
-@section('title', 'User Dashboard')
-
-@section('content')
-    <div class="container">
-        <h1>Welcome to your Dashboard, {{ Auth::user()->name }}!</h1>
-        <p>This is your personal dashboard where you can view your profile, manage settings, and more.</p>
-
-        <!-- You can add more content for the user dashboard here -->
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    {{ __("You're logged in!") }}
+                </div>
+            </div>
+        </div>
     </div>
-@endsection
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-</head>
-<body>
-    <h1>Welcome to your Dashboard, {{ auth()->user()->name }}!</h1>
-    
-    <p><a href="{{ route('user.profile') }}">Go to Profile</a></p>
-</body>
-</html>
+</x-app-layout>

@@ -1,27 +1,31 @@
-{{-- resources/views/user/profile.blade.php --}}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-</head>
-<body>
-    <h1>Profile of {{ auth()->user()->name }}</h1>
+@extends('layouts.app')
 
-    <form action="{{ route('user.profile.update') }}" method="POST">
-        @csrf
-        @method('PUT')
+@section('content')
+    <div class="container">
+        <h1>Profile</h1>
 
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="{{ auth()->user()->name }}" required>
-        <br>
+        <!-- Display success message if exists -->
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="{{ auth()->user()->email }}" required>
-        <br>
+        <form action="{{ route('user.profile.update') }}" method="POST">
+            @csrf
+            @method('PUT')
 
-        <button type="submit">Update Profile</button>
-    </form>
-</body>
-</html>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $user->name) }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $user->email) }}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+    </div>
+@endsection
