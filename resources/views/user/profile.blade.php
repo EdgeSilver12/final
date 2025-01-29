@@ -1,38 +1,27 @@
-@extends('layouts.app')
+{{-- resources/views/user/profile.blade.php --}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+</head>
+<body>
+    <h1>Profile of {{ auth()->user()->name }}</h1>
 
-@section('content')
-<div class="container">
-    <h2>User Profile</h2>
-
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    <form method="POST" action="{{ route('profile.update') }}">
+    <form action="{{ route('user.profile.update') }}" method="POST">
         @csrf
         @method('PUT')
 
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $user->name) }}" required>
-        </div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ auth()->user()->name }}" required>
+        <br>
 
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $user->email) }}" required>
-        </div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="{{ auth()->user()->email }}" required>
+        <br>
 
-        <div class="form-group">
-            <label for="password">Password (Leave blank to keep current)</label>
-            <input type="password" class="form-control" id="password" name="password">
-        </div>
-
-        <div class="form-group">
-            <label for="password_confirmation">Confirm Password</label>
-            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
-        </div>
-
-        <button type="submit" class="btn btn-primary">Update Profile</button>
+        <button type="submit">Update Profile</button>
     </form>
-</div>
-@endsection
+</body>
+</html>

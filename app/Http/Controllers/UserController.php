@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
+
 class UserController extends Controller
 {
     public function profile()
@@ -51,4 +52,18 @@ class UserController extends Controller
             return redirect()->route('profile')->with('error', 'There was an issue updating your profile');
         }
     }
+    // app/Http/Controllers/UserController.php
+
+    
+
+    
+        // Method to show the dashboard for regular users
+        public function dashboard()
+        {
+            return view('user.dashboard');  // Ensure this view exists
+        }
+    
+        // Other methods like profile, etc.
+    
+    
 }
