@@ -8,6 +8,18 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+
+    protected function redirectTo()
+    {
+        if (Auth::user()->role === 'admin') {
+            return '/admin/dashboard';
+        }
+        return '/user/dashboard';
+    }
+
+
+
+
     public function showLoginForm()
     {
         return view('auth.login');
@@ -32,4 +44,17 @@ class LoginController extends Controller
         Auth::logout();
         return redirect()->route('home');
     }
+
+
+    // app/Http/Controllers/Auth/LoginController.php
+
+protected function authenticated(Request $request, $user)
+{
+    // Check user role and redirect accordingly
+    if ($user->hasRole('admin')) {
+        return redirect()->route('admin.dashboard');
+    }
+    return redirect()->route('user.dashboard');
+}
+
 }

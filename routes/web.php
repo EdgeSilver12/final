@@ -1,34 +1,39 @@
 <?php
 
+// routes/web.php
+
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\ConfirmPasswordController;
-use App\Http\Controllers\HomeController;
 
-// Public Routes
-Route::get('/', function () {
-    return view('home');
-})->name('home');
-
-// Authentication Routes
-Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('login', [LoginController::class, 'login']);
-Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [RegisterController::class, 'register']);
-
-// Authenticated User Routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
-    
-    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
-    Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/dashboard', [DashboardController::class, 'redirectUser'])->name('dashboard');
+
+    Route::middleware(['role:admin'])->group(function () {
+        Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+        Route::resource('/admin/contents', AdminController::class);
+    });
+
+    Route::middleware(['role:user'])->group(function () {
+        Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard');
+    });
 });
 
-// Admin Routes
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-});
+// DashboardController.php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\Auth;
+
+class DashboardController extends Controller
+{
+    public function redirectUser()
+    {
+        $user = Auth::user();
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('user.dashboard');
+    }
+}

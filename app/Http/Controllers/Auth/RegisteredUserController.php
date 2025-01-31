@@ -14,6 +14,18 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
+
+   
+    
+        protected function redirectTo()
+        {
+            if (Auth::user()->role === 'admin') {
+                return '/admin/dashboard';
+            }
+            return '/user/dashboard';
+        }
+    
+
     /**
      * Display the registration view.
      */

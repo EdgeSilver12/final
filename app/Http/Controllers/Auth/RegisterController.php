@@ -13,7 +13,7 @@ class RegisterController extends Controller
 {
     use RegistersUsers;
 
-    protected $redirectTo = '/dashboard'; // Change to the page you want after registration
+    protected $redirectTo = 'user/dashboard'; // Change to the page you want after registration
 
     public function __construct()
     {
@@ -54,4 +54,7 @@ class RegisterController extends Controller
 
         return redirect($this->redirectTo);
     }
+
+
+    
 }
