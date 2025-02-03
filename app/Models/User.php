@@ -16,6 +16,10 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+
+    
+    
+
     protected $fillable = [
         'name', 'email', 'password', 'role',
     ];
@@ -29,4 +33,13 @@ class User extends Authenticatable
     {
         return $this->role === $role;
     }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+ 
+
+
 }

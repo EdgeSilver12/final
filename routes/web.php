@@ -1,39 +1,43 @@
 <?php
 
-// routes/web.php
-
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ContentController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\RegisterController;
 
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
+
+// Authentication Routes
+Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('login', [LoginController::class, 'login']);
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+// Dashboard Routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'redirectUser'])->name('dashboard');
-
-    Route::middleware(['role:admin'])->group(function () {
-        Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-        Route::resource('/admin/contents', AdminController::class);
-    });
-
-    Route::middleware(['role:user'])->group(function () {
-        Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard');
-    });
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/user/dashboard', [DashboardController::class, 'index'])->name('user.dashboard');
 });
 
-// DashboardController.php
+// User Profile Route
+Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
 
-namespace App\Http\Controllers;
+// Content CRUD Routes
+Route::middleware(['auth'])->group(function () {
+    Route::resource('contents', ContentController::class);
 
-use Illuminate\Support\Facades\Auth;
 
-class DashboardController extends Controller
-{
-    public function redirectUser()
-    {
-        $user = Auth::user();
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
-        return redirect()->route('user.dashboard');
-    }
-}
+    Route::middleware(['auth'])->group(function () {
+        Route::resource('contents', ContentController::class);
+    });
+
+    Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [RegisterController::class, 'register']);
+
+    
+    
+});

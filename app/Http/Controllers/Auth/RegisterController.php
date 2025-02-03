@@ -4,57 +4,34 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
-    use RegistersUsers;
-
-    protected $redirectTo = 'user/dashboard'; // Change to the page you want after registration
-
-    public function __construct()
-    {
-        // Temporarily removed middleware for debugging
-        // $this->middleware('guest');
-    }
-
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-    }
-
-    protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
-    }
-
     public function showRegistrationForm()
     {
         return view('auth.register');
     }
 
-    public function register(\Illuminate\Http\Request $request)
+    public function register(Request $request)
     {
-        $this->validator($request->all())->validate();
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
 
-        event(new Registered($user = $this->create($request->all())));
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'user', // Default role
+        ]);
 
-        $this->guard()->login($user);
+        Auth::login($user);
 
-        return redirect($this->redirectTo);
+        return redirect()->route('user.dashboard');
     }
-
-
-    
 }

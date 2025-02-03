@@ -1,24 +1,43 @@
 @extends('layouts.app')
 
+@section('title', 'All Contents')
+
 @section('content')
-    <h1>All Contents</h1>
-    <a href="{{ route('contents.create') }}" class="btn btn-primary">Create New Content</a>
+<div class="container">
+    <h1 class="mb-4">All Contents</h1>
+    
+    <a href="{{ route('contents.create') }}" class="btn btn-primary mb-3">Create New Content</a>
 
-    @foreach ($contents as $content)
-        <div class="card mt-3">
-            <div class="card-body">
-                <h5>{{ $content->title }}</h5>
-                <p>{{ $content->body }}</p>
-                <a href="{{ route('contents.show', $content) }}" class="btn btn-info">View</a>
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
-                @if(auth()->user()->id == $content->user_id || auth()->user()->hasRole('admin'))
-                    <a href="{{ route('contents.edit', $content) }}" class="btn btn-warning">Edit</a>
-                    <form action="{{ route('contents.destroy', $content) }}" method="POST" class="d-inline">
-                        @csrf @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                @endif
-            </div>
-        </div>
-    @endforeach
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Body</th>
+                <th>Author</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($contents as $content)
+                <tr>
+                    <td>{{ $content->title }}</td>
+                    <td>{{ $content->body }}</td>
+                    <td>{{ $content->user->name }}</td>
+                    <td>
+                        <a href="{{ route('contents.edit', $content) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ route('contents.destroy', $content) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 @endsection

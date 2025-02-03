@@ -1,78 +1,55 @@
 <?php
 
-// app/Http/Controllers/DashboardController.php
-
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Content;
 use Illuminate\Http\Request;
+use App\Models\County;
+use App\Models\Town;
+use App\Models\Population;
+use App\Models\Content;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    // Show user dashboard with all database tables
+    /**
+     * Show the dashboard for the authenticated user.
+     */
     public function index()
     {
-        // Fetch all users and contents (you can add pagination if needed)
-        $users = User::all();
+        $user = Auth::user();
+
+        if ($user->role === 'admin') {
+            return $this->adminDashboard();
+        } else {
+            return $this->userDashboard();
+        }
+    }
+
+    /**
+     * Show the admin dashboard (CRUD all data).
+     */
+    public function adminDashboard()
+    {
+        $counties = County::all();
+        $towns = Town::all();
+        $populations = Population::all();
         $contents = Content::all();
 
-        // Pass the data to the dashboard view
-        return view('dashboard', compact('users', 'contents'));
+        return view('admin.dashboard', compact('counties', 'towns', 'populations', 'contents'));
     }
 
-    // Show the form to create a new content
-    public function create()
+    /**
+     * Show the user dashboard (CRUD own data only).
+     */
+    public function userDashboard()
     {
-        return view('content.create');
-    }
+        $userId = Auth::id();
 
-    // Store the new content in the database
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'body' => 'required|string',
-        ]);
+        $counties = County::all(); // Users can view all counties
+        $towns = Town::all(); // Users can view all towns
+        $populations = Population::all(); // Users can view all population data
+        $contents = Content::where('user_id', $userId)->get(); // Users can only manage their own content
 
-        Content::create([
-            'title' => $request->title,
-            'body' => $request->body,
-        ]);
-
-        return redirect()->route('user.dashboard')->with('success', 'Content created successfully.');
-    }
-
-    // Show the form to edit content
-    public function edit($id)
-    {
-        $content = Content::findOrFail($id);
-        return view('content.edit', compact('content'));
-    }
-
-    // Update the content
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'body' => 'required|string',
-        ]);
-
-        $content = Content::findOrFail($id);
-        $content->update([
-            'title' => $request->title,
-            'body' => $request->body,
-        ]);
-
-        return redirect()->route('user.dashboard')->with('success', 'Content updated successfully.');
-    }
-
-    // Delete the content
-    public function destroy($id)
-    {
-        $content = Content::findOrFail($id);
-        $content->delete();
-
-        return redirect()->route('user.dashboard')->with('success', 'Content deleted successfully.');
+        return view('user.dashboard', compact('counties', 'towns', 'populations', 'contents'));
     }
 }

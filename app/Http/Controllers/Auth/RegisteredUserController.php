@@ -17,13 +17,16 @@ class RegisteredUserController extends Controller
 
    
     
-        protected function redirectTo()
-        {
-            if (Auth::user()->role === 'admin') {
-                return '/admin/dashboard';
-            }
-            return '/user/dashboard';
-        }
+       // In RegisteredUserController.php
+public function redirectTo()
+{
+    if (Auth::user()->role === 'admin') {
+        return '/admin/dashboard';  // Admin should be redirected to the admin dashboard
+    }
+
+    return '/user/dashboard';  // Regular users are redirected to their dashboard
+}
+
     
 
     /**
@@ -59,4 +62,8 @@ class RegisteredUserController extends Controller
 
         return redirect(route('dashboard', absolute: false));
     }
+
+
+
+    
 }

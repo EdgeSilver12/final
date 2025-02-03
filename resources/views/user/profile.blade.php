@@ -3,6 +3,7 @@
 @section('content')
     <div class="container">
         <h1>User Profile</h1>
+        <a href="{{ route('user.profile') }}">Go to Profile</a>
 
         @if(session('success'))
             <div class="alert alert-success">

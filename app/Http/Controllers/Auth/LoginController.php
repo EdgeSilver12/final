@@ -8,17 +8,13 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-
     protected function redirectTo()
     {
         if (Auth::user()->role === 'admin') {
-            return '/admin/dashboard';
+            return route('admin.dashboard');
         }
-        return '/user/dashboard';
+        return route('user.dashboard');
     }
-
-
-
 
     public function showLoginForm()
     {
@@ -33,7 +29,7 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($request->only('email', 'password'))) {
-            return redirect()->route('user.dashboard');
+            return redirect()->intended($this->redirectTo());
         }
 
         return redirect()->back()->withErrors(['email' => 'Invalid credentials']);
@@ -45,16 +41,11 @@ class LoginController extends Controller
         return redirect()->route('home');
     }
 
-
-    // app/Http/Controllers/Auth/LoginController.php
-
-protected function authenticated(Request $request, $user)
-{
-    // Check user role and redirect accordingly
-    if ($user->hasRole('admin')) {
-        return redirect()->route('admin.dashboard');
+    protected function authenticated(Request $request, $user)
+    {
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('user.dashboard');
     }
-    return redirect()->route('user.dashboard');
-}
-
 }

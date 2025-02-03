@@ -17,6 +17,8 @@ class UserController extends Controller
 
         // Return the profile view with the user's data
         return view('user.profile', compact('user'));
+
+
     }
 
     public function update(Request $request)
@@ -66,4 +68,11 @@ class UserController extends Controller
         // Other methods like profile, etc.
     
     
+        
+      
+            
+          
+       
+        
+
 }
