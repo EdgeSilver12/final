@@ -34,10 +34,8 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['auth'])->group(function () {
         Route::resource('contents', ContentController::class);
     });
-
-    Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    
+Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [RegisterController::class, 'register']);
 
-    
-    
 });
