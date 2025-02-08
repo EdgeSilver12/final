@@ -9,12 +9,13 @@ use Illuminate\Support\Facades\Auth;
 class LoginController extends Controller
 {
     protected function redirectTo()
-    {
-        if (Auth::user()->role === 'admin') {
-            return route('admin.dashboard');
-        }
-        return route('user.dashboard');
+{
+    if (Auth::user()->role === 'admin') {
+        return route('admin.dashboard');
     }
+    return route('user.dashboard');
+}
+
 
     public function showLoginForm()
     {

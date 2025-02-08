@@ -10,10 +10,15 @@ use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
+
+
+    // ✅ This method must exist to display the register page
     public function showRegistrationForm()
     {
         return view('auth.register');
+
     }
+
 
     public function register(Request $request)
     {
@@ -22,16 +27,20 @@ class RegisterController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
-
+    
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'user', // Default role
         ]);
-
+    
         Auth::login($user);
-
+    
+        // ✅ Redirect to the correct user dashboard route
         return redirect()->route('user.dashboard');
     }
+    
+
 }
+

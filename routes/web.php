@@ -7,6 +7,9 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\DataRetrievalController;
+use App\Http\Controllers\GraphController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,6 +26,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/dashboard', [DashboardController::class, 'index'])->name('user.dashboard');
 });
 
+Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [RegisterController::class, 'register']);
+
 // User Profile Route
 Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
 
@@ -35,7 +41,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('contents', ContentController::class);
     });
     
-Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [RegisterController::class, 'register']);
+Route::get('/retrieve-data', [DataRetrievalController::class, 'retrieve'])->name('retrieve.data');
+Route::get('/graph', [GraphController::class, 'index'])->name('graph');
 
 });
+
+
